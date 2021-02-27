@@ -29,8 +29,8 @@ app.all('/*', function (req, res, next) {
  */
 app.get("/api/tag/:mac/battery", (req, res, next) => {
     console.log('battery status', req.originalUrl);
-    var sql = "SELECT battery FROM sensors WHERE mac = ? ORDER BY timestamp DESC LIMIT 1"
-    var params = [req.params.mac]
+    var sql = "SELECT battery FROM sensors WHERE mac = ? ORDER BY timestamp DESC LIMIT 1";
+    var params = [req.params.mac];
     db.all(sql, params, (err, rows) => {
         if (err) {
             console.error(err.message);
@@ -42,6 +42,28 @@ app.get("/api/tag/:mac/battery", (req, res, next) => {
         res.json({
             "message": "success",
             "data": rows[0].battery
+        })
+    });
+});
+
+/**
+ * Returns temperature for given tag mac address + days
+ */
+app.get("/api/tag/:mac/temperature/:days", (req, res, next) => {
+    console.log('temperature data', req.originalUrl);
+    var sql = "SELECT timestamp,temperature FROM sensors WHERE mac = ? AND timestamp > ? ORDER BY timestamp";
+    var  params = [req.params.mac,req.params.days];
+    db.all(sql, params, (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            res.status(400).json({ "error": err.message });
+            return;
+        }
+
+        console.log(">>> success", rows);
+        res.json({
+            "message": "success",
+            "data": rows[0]
         })
     });
 });
