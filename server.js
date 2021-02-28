@@ -63,7 +63,7 @@ app.get("/api/tag/:mac/temperature/:days", (req, res, next) => {
         console.log(">>> success", rows);
         res.json({
             "message": "success",
-            "data": rows[0]
+            "data": rows
         })
     });
 });
